@@ -3,12 +3,16 @@ package me.cooper.rick.shoppinglist.service.shoppinglist
 import me.cooper.rick.shoppinglist.domain.AppUser
 import me.cooper.rick.shoppinglist.domain.ShoppingList
 import spock.lang.Specification
-
+import spock.lang.Unroll
 
 class ShoppingListServiceSpec extends Specification {
 
   private static final String NAME = "My List"
-  private static final AppUser user = new AppUser(1L, "TestyMcTest", "password", "Mr Test", "test@test.com", [].toSet(), [].toSet())
+  private static final String OTHER_NAME = "My Other List"
+  private static final AppUser USER =
+      new AppUser(1L, "TestyMcTest", "password", "Mr Test", "test@test.com", [].toSet(), [].toSet())
+  private static final AppUser USER_2 =
+      new AppUser(2L, "TestyMcTestTest", "password", "Mrs Test", "test2@test.com", [].toSet(), [].toSet())
 
   private static ShoppingListService shoppingListService
 
@@ -16,45 +20,86 @@ class ShoppingListServiceSpec extends Specification {
     shoppingListService = new InMemoryShoppingListService()
   }
 
-  def "the service can create an store a shopping list from a pre-created list"() {
+  def "new shopping list from object"() {
     given: "a potential shopping list to be created"
-    def listToCreate = new ShoppingList(NAME, user)
+    def listToCreate = new ShoppingList(NAME, USER)
+    def secondListToCreate = new ShoppingList(OTHER_NAME, USER_2)
+    and: "there are no stored lists"
+    shoppingListService.totalCount() == 0
 
     when: "the service is called to create a new list"
     def createdList = shoppingListService.new(listToCreate)
 
     then: "the returned list has an id"
     createdList.id
-    and: "the name of the returned list is the same as that passed"
+    and: "the returned list has the given parameters"
     createdList.name == NAME
-    and: "the returned list has a set containing the given user and no other"
-    createdList.users == [user].toSet()
+    createdList.users == [USER].toSet()
+    and: "the service has stored the list"
+    shoppingListService.totalCount() == 1
 
-    when: "the list is then retrieved from the service"
+    when: "the service is called to create a new list"
+    def secondCreatedList = shoppingListService.new(secondListToCreate)
+
+    then: "the returned list has an id"
+    secondCreatedList.id
+    and: "the returned list has the given parameters"
+    secondCreatedList.name == OTHER_NAME
+    secondCreatedList.users == [USER_2].toSet()
+    and: "the service has stored the list"
+    shoppingListService.totalCount() == 2
+
+    when: "the lists are then retrieved from the service"
     def retrievedList = shoppingListService.one(createdList.id)
+    def secondRetrievedList = shoppingListService.one(secondCreatedList.id)
+
     then: "it has been stored and is equal to that returned"
     retrievedList == createdList
+    secondRetrievedList == secondCreatedList
+    retrievedList != secondRetrievedList
   }
 
-  def "the service can create a shopping list from name and user"() {
+  @Unroll
+  def "new shopping list from {#name} and user, stripping name whitespace"() {
     when: "the service is called to create a new list"
-    def createdList = shoppingListService.new(NAME, user)
+    def createdList = shoppingListService.new(NAME, USER)
 
     then: "the returned list has an id"
     createdList.id
     and: "the name of the returned list is the same as that passed"
     createdList.name == NAME
     and: "the returned list has a set containing the given user and no other"
-    createdList.users == [user].toSet()
+    createdList.users == [USER].toSet()
 
     when: "the list is then retrieved from the service"
     def retrievedList = shoppingListService.one(createdList.id)
     then: "it has been stored and is equal to that returned"
     retrievedList == createdList
+
+    where: "name is provided either with or without spaces"
+    name << [NAME, "   $NAME", "$NAME  ", " $NAME "]
   }
 
-  def "the service throws an exception if given invalid parameters for creation"() {
+  @Unroll
+  def "new user with blank name returns null"() {
+    when: "the service is asked to create and store a list"
+    def shoppingList = shoppingListService.new(name, USER)
 
+    then: "no list is returned"
+    !shoppingList
+    and:
+    shoppingListService.totalCount() == 0
+
+    where: "an empty or space only name is supplied"
+    name << ["", " ", "                  "]
+  }
+
+  def "retrieval of unstored user returns null"() {
+    when:
+    def shoppingList = shoppingListService.one(999L)
+
+    then:
+    !shoppingList
   }
 
 }

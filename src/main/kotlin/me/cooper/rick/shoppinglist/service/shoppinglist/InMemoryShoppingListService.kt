@@ -4,17 +4,15 @@ import me.cooper.rick.shoppinglist.domain.AppUser
 import me.cooper.rick.shoppinglist.domain.ShoppingList
 import me.cooper.rick.shoppinglist.domain.ShoppingListItem
 import org.springframework.stereotype.Service
+import java.lang.IllegalArgumentException
 import java.util.concurrent.atomic.AtomicLong
 
-@Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
 @Service
+@Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
 class InMemoryShoppingListService(private val shoppingLists: MutableMap<Long, ShoppingList> = mutableMapOf()) :
         ShoppingListService {
 
-
-    private val idCount = AtomicLong()
-
-    override fun addItem(shoppingListItem: ShoppingListItem, shoppingList: ShoppingList): ShoppingList {
+    override fun addItemToList(shoppingListItem: ShoppingListItem, shoppingList: ShoppingList): ShoppingList {
         if (shoppingList.id == null) throw Exception("no id!!")
         val originalShoppingList = one(shoppingList.id) ?: throw Exception("no list exists")
         if (shoppingList != originalShoppingList) throw Exception("lists don't match")
@@ -23,26 +21,27 @@ class InMemoryShoppingListService(private val shoppingLists: MutableMap<Long, Sh
         return updatedShoppingList
     }
 
-    override fun removeItem(shoppingListItem: ShoppingListItem, shoppingList: ShoppingList): ShoppingList {
+    override fun removeItemFromList(shoppingListItem: ShoppingListItem, shoppingList: ShoppingList): ShoppingList {
         if (shoppingList.id == null) throw Exception("no id!!")
         return shoppingList
     }
 
-    override fun new(it: ShoppingList): ShoppingList? {
-        val newList = it.copy(id = idCount.incrementAndGet())
+    override fun new(shoppingList: ShoppingList): ShoppingList? {
+        val newList = shoppingList.copy(id = idGenerator.incrementAndGet())
         shoppingLists[newList.id!!] = newList
         return newList
     }
 
-    override fun new(name: String, user: AppUser): ShoppingList? = new(ShoppingList(name, setOf(user)))
+    override fun new(name: String, user: AppUser): ShoppingList? =
+        if (name.isBlank()) null else  new(ShoppingList(name.trim(), setOf(user)))
 
     override fun one(id: Long): ShoppingList? = shoppingLists[id]
 
-    override fun some(vararg ids: Long): List<ShoppingList> = ids.map { shoppingLists[it] }.filterNotNull()
+    override fun some(vararg ids: Long?): List<ShoppingList> = ids.mapNotNull { shoppingLists[it] }
 
     override fun all(): List<ShoppingList> = shoppingLists.values.toList()
 
-    override fun change(shoppingList: ShoppingList): ShoppingList? {
+    override fun change(id: Long?, shoppingList: ShoppingList): ShoppingList? {
         TODO()
     }
 
@@ -50,7 +49,14 @@ class InMemoryShoppingListService(private val shoppingLists: MutableMap<Long, Sh
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun remove(id: Long): Boolean {
+    override fun removeById(id: Long?): Boolean {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+
+    override fun totalCount(): Int = shoppingLists.size
+
+    companion object {
+        private val idGenerator = AtomicLong()
+    }
+
 }

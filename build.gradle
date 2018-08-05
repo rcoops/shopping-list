@@ -62,11 +62,12 @@ dependencies {
   runtime 'org.springframework.boot:spring-boot-devtools'
   runtime 'com.h2database:h2'
   runtime 'mysql:mysql-connector-java'
+  testCompile "org.assertj:assertj-core:3.10.0"
   testCompile 'org.springframework.boot:spring-boot-starter-test'
   testCompile 'org.springframework.security:spring-security-test'
 
   // https://mvnrepository.com/artifact/org.codehaus.groovy/groovy-all
-  implementation group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.5.1', ext: 'pom'
+  testCompile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.5.1', ext: 'pom'
   // https://mvnrepository.com/artifact/org.spockframework/spock-core
   testCompile 'org.spockframework:spock-core:1.1-groovy-2.4'
 

@@ -19,7 +19,7 @@ class InMemoryUserService: UserService {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun some(vararg ids: Long): List<AppUser> {
+    override fun some(vararg ids: Long?): List<AppUser> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
@@ -27,7 +27,7 @@ class InMemoryUserService: UserService {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun change(user: AppUser): AppUser? {
+    override fun change(id: Long?, user: AppUser): AppUser? {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
@@ -35,7 +35,11 @@ class InMemoryUserService: UserService {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun remove(id: Long): Boolean {
+    override fun removeById(id: Long?): Boolean {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun totalCount(): Int {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
