@@ -1,6 +1,5 @@
 package me.cooper.rick.shoppinglist
 
-import me.cooper.rick.shoppinglist.service.shoppinglist.InMemoryShoppingListService
 import org.junit.Test
 
 class KotlinTests {

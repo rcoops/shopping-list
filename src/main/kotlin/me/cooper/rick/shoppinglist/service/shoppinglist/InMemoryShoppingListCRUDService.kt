@@ -4,27 +4,12 @@ import me.cooper.rick.shoppinglist.domain.AppUser
 import me.cooper.rick.shoppinglist.domain.ShoppingList
 import me.cooper.rick.shoppinglist.domain.ShoppingListItem
 import org.springframework.stereotype.Service
-import java.lang.IllegalArgumentException
 import java.util.concurrent.atomic.AtomicLong
 
 @Service
 @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
-class InMemoryShoppingListService(private val shoppingLists: MutableMap<Long, ShoppingList> = mutableMapOf()) :
-        ShoppingListService {
-
-    override fun addItemToList(shoppingListItem: ShoppingListItem, shoppingList: ShoppingList): ShoppingList {
-        if (shoppingList.id == null) throw Exception("no id!!")
-        val originalShoppingList = one(shoppingList.id) ?: throw Exception("no list exists")
-        if (shoppingList != originalShoppingList) throw Exception("lists don't match")
-        val updatedShoppingList = shoppingList.copy(items = shoppingList.items.plus(shoppingListItem))
-        shoppingLists[updatedShoppingList.id!!] = updatedShoppingList
-        return updatedShoppingList
-    }
-
-    override fun removeItemFromList(shoppingListItem: ShoppingListItem, shoppingList: ShoppingList): ShoppingList {
-        if (shoppingList.id == null) throw Exception("no id!!")
-        return shoppingList
-    }
+class InMemoryShoppingListCRUDService(private val shoppingLists: MutableMap<Long, ShoppingList> = mutableMapOf()) :
+        ShoppingListCRUDService {
 
     override fun new(shoppingList: ShoppingList): ShoppingList? {
         val newList = shoppingList.copy(id = idGenerator.incrementAndGet())

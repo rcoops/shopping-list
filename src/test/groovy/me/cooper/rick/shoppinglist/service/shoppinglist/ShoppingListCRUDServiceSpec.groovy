@@ -1,29 +1,27 @@
 package me.cooper.rick.shoppinglist.service.shoppinglist
 
-import me.cooper.rick.shoppinglist.domain.AppUser
 import me.cooper.rick.shoppinglist.domain.ShoppingList
 import spock.lang.Specification
 import spock.lang.Unroll
 
-class ShoppingListServiceSpec extends Specification {
+import static me.cooper.rick.shoppinglist.FixturesKt.TEST_USER_1
+import static me.cooper.rick.shoppinglist.FixturesKt.TEST_USER_2
+
+class ShoppingListCRUDServiceSpec extends Specification {
 
   private static final String NAME = "My List"
   private static final String OTHER_NAME = "My Other List"
-  private static final AppUser USER =
-      new AppUser(1L, "TestyMcTest", "password", "Mr Test", "test@test.com", [].toSet(), [].toSet())
-  private static final AppUser USER_2 =
-      new AppUser(2L, "TestyMcTestTest", "password", "Mrs Test", "test2@test.com", [].toSet(), [].toSet())
 
-  private static ShoppingListService shoppingListService
+  private static ShoppingListCRUDService shoppingListService
 
   def setup() {
-    shoppingListService = new InMemoryShoppingListService()
+    shoppingListService = new InMemoryShoppingListCRUDService()
   }
 
   def "new shopping list from object"() {
     given: "a potential shopping list to be created"
-    def listToCreate = new ShoppingList(NAME, USER)
-    def secondListToCreate = new ShoppingList(OTHER_NAME, USER_2)
+    def listToCreate = new ShoppingList(NAME, TEST_USER_1)
+    def secondListToCreate = new ShoppingList(OTHER_NAME, TEST_USER_2)
     and: "there are no stored lists"
     shoppingListService.totalCount() == 0
 
@@ -34,7 +32,7 @@ class ShoppingListServiceSpec extends Specification {
     createdList.id
     and: "the returned list has the given parameters"
     createdList.name == NAME
-    createdList.users == [USER].toSet()
+    createdList.users == [TEST_USER_1].toSet()
     and: "the service has stored the list"
     shoppingListService.totalCount() == 1
 
@@ -45,7 +43,7 @@ class ShoppingListServiceSpec extends Specification {
     secondCreatedList.id
     and: "the returned list has the given parameters"
     secondCreatedList.name == OTHER_NAME
-    secondCreatedList.users == [USER_2].toSet()
+    secondCreatedList.users == [TEST_USER_2].toSet()
     and: "the service has stored the list"
     shoppingListService.totalCount() == 2
 
@@ -62,14 +60,14 @@ class ShoppingListServiceSpec extends Specification {
   @Unroll
   def "new shopping list from {#name} and user, stripping name whitespace"() {
     when: "the service is called to create a new list"
-    def createdList = shoppingListService.new(NAME, USER)
+    def createdList = shoppingListService.new(NAME, TEST_USER_1)
 
     then: "the returned list has an id"
     createdList.id
     and: "the name of the returned list is the same as that passed"
     createdList.name == NAME
     and: "the returned list has a set containing the given user and no other"
-    createdList.users == [USER].toSet()
+    createdList.users == [TEST_USER_1].toSet()
 
     when: "the list is then retrieved from the service"
     def retrievedList = shoppingListService.one(createdList.id)
@@ -83,7 +81,7 @@ class ShoppingListServiceSpec extends Specification {
   @Unroll
   def "new user with blank name returns null"() {
     when: "the service is asked to create and store a list"
-    def shoppingList = shoppingListService.new(name, USER)
+    def shoppingList = shoppingListService.new(name, TEST_USER_1)
 
     then: "no list is returned"
     !shoppingList
@@ -94,12 +92,19 @@ class ShoppingListServiceSpec extends Specification {
     name << ["", " ", "                  "]
   }
 
-  def "retrieval of unstored user returns null"() {
+  def "retrieval of un-stored shopping list returns null"() {
     when:
     def shoppingList = shoppingListService.one(999L)
 
     then:
     !shoppingList
+  }
+
+  @Unroll
+  def "add item to list"() {
+
+    where:
+    shoppingList |
   }
 
 }

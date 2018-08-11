@@ -3,7 +3,7 @@ package me.cooper.rick.shoppinglist.service
 interface CRUDService<T, ID> {
 
     // C
-    fun new(it: T): T?
+    fun new(entity: T): T
 
     // R
     fun one(id: Long): T?
@@ -11,7 +11,7 @@ interface CRUDService<T, ID> {
     fun all(): List<T>
 
     // U
-    fun change(id: ID, entity: T): T?
+    fun change(entity: T): T
 
     // D
     fun remove(entity: T): Boolean

@@ -11,7 +11,7 @@ class InMemoryUserService: UserService {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun new(it: AppUser): AppUser? {
+    override fun new(entity: AppUser): AppUser? {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
