@@ -1,4 +1,4 @@
-package me.cooper.rick.shoppinglist.service
+package me.cooper.rick.shoppinglist.service.crud
 
 interface CRUDService<T, ID> {
 
@@ -14,9 +14,9 @@ interface CRUDService<T, ID> {
     fun change(entity: T): T
 
     // D
-    fun remove(entity: T): Boolean
-    fun removeById(id: ID): Boolean
+    fun remove(entity: T)
+    fun removeById(id: ID)
 
-    fun totalCount(): Int
+    fun totalCount(): Long
 
 }

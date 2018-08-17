@@ -12,10 +12,10 @@ class ShoppingListCRUDServiceSpec extends Specification {
   private static final String NAME = "My List"
   private static final String OTHER_NAME = "My Other List"
 
-  private static ShoppingListCRUDService shoppingListService
+  private static AbstractShoppingListService shoppingListService
 
   def setup() {
-    shoppingListService = new InMemoryShoppingListCRUDService()
+    shoppingListService = new DummyShoppingListService()
   }
 
   def "new shopping list from object"() {
@@ -98,13 +98,6 @@ class ShoppingListCRUDServiceSpec extends Specification {
 
     then:
     !shoppingList
-  }
-
-  @Unroll
-  def "add item to list"() {
-
-    where:
-    shoppingList |
   }
 
 }
