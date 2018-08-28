@@ -8,7 +8,7 @@ class UserServiceSpec extends Specification {
   def userService
 
   def setup() {
-    this.userService = new InMemoryUserService()
+    this.userService = new DummyUserService()
   }
 
   def "when creating a new user"() {

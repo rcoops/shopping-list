@@ -5,7 +5,6 @@ import me.cooper.rick.shoppinglist.domain.ShoppingList
 import org.springframework.stereotype.Service
 import java.util.concurrent.atomic.AtomicLong
 
-@Service
 @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
 class DummyShoppingListService(private val shoppingLists: MutableMap<Long, ShoppingList> = mutableMapOf()) :
     AbstractShoppingListService() {

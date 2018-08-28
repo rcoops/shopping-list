@@ -1,11 +1,15 @@
+package me.cooper.rick.shoppinglist.service.shoppinglist
+
 import me.cooper.rick.shoppinglist.domain.AppUser
 import me.cooper.rick.shoppinglist.domain.ShoppingList
-import me.cooper.rick.shoppinglist.service.shoppinglist.AbstractShoppingListService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.jpa.repository.JpaRepository
 import javax.persistence.EntityNotFoundException
 
-class JpaShoppingListService(private val shoppingListRepository: JpaRepository<ShoppingList, Long>)
-  : AbstractShoppingListService() {
+class JpaShoppingListService : AbstractShoppingListService() {
+
+  @Autowired
+  private lateinit var shoppingListRepository: JpaRepository<ShoppingList, Long>
 
   override fun all(): List<ShoppingList> = shoppingListRepository.findAll()
 

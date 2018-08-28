@@ -3,9 +3,8 @@ package me.cooper.rick.shoppinglist.service.user
 import me.cooper.rick.shoppinglist.domain.AppUser
 import org.springframework.stereotype.Service
 
-@Service
 @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
-class InMemoryUserService: UserService {
+class DummyUserService: UserService {
 
     override fun addFriend(user: AppUser, friend: AppUser) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
